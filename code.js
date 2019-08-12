@@ -15,39 +15,53 @@ if (selection.length == 1) {
     let childY = child.y;
     let parentWidth = child.parent.width;
     let parentHeight = child.parent.height;
-    let obj = {};
-    obj.l = childX;
-    obj.t = childY;
-    obj.r = parentWidth - (childX + childWidth);
-    obj.b = parentHeight - (childY + childHeight);
-    // let objCenter = getAllCenterPoints(child)
-    // let line = figma.createLine()
-    // left line
-    // line.x = child.absoluteTransform[0][2] - childX
-    // line.y = child.absoluteTransform[1][2] + (childHeight / 2)
-    // line.resize(childX,0)
-    // for (let i = 0; i < numberOfLines; i++) {
-    //     const line = figma.createLine()
-    //     line.x = 
-    //     // figma.currentPage.appendChild(line)
-    //     // nodes.push(line)
-    //     console.log(i)
-    // }
+    let distance = {};
+    distance.l = childX;
+    distance.t = childY;
+    distance.r = parentWidth - (childX + childWidth);
+    distance.b = parentHeight - (childY + childHeight);
+    let getDistance = Object.values(distance);
+    let points = Object.values(getAllCenterPoints(child));
+    const line = figma.createLine();
+    loopPoints(points, line);
+    loopDistance(getDistance, line);
+}
+// figma.group(nodes, child.parent)
+errorMessage = '';
+function loopPoints(array, line) {
     for (let i = 0; i < array.length; i++) {
-        const element = array[i];
+        const pts = array[i];
+        line.x = pts.x;
+        line.y = pts.y;
+        console.log(pts);
     }
-    // figma.group(nodes, child.parent)
-    errorMessage = '';
+}
+function loopDistance(array, line) {
+    for (let i = 0; i < array.length; i++) {
+        const length = array[i];
+        line.resize(length, 0);
+    }
 }
 // Returns all possible center points
 function getAllCenterPoints(obj) {
     let objCenter = {};
-    objCenter.t = [obj.x + obj.width * 0.5, obj.y];
-    objCenter.r = [obj.x + obj.width, obj.y + obj.height * 0.5];
-    objCenter.b = [obj.x + obj.width * 0.5, obj.y + obj.height];
-    objCenter.l = [obj.x, obj.y + obj.height * 0.5];
+    objCenter.t = { x: obj.x + obj.width * 0.5, y: obj.y };
+    objCenter.r = { x: obj.x + obj.width, y: obj.y + obj.height * 0.5 };
+    objCenter.b = { x: obj.x + obj.width * 0.5, y: obj.y + obj.height };
+    objCenter.l = { x: obj.x, y: obj.y + obj.height * 0.5 };
     return objCenter;
 }
 // Make sure to close the plugin when you're done. Otherwise the plugin will
 // keep running, which shows the cancel button at the bottom of the screen.
 figma.closePlugin(errorMessage);
+// left line
+// line.x = child.absoluteTransform[0][2] - childX
+// line.y = child.absoluteTransform[1][2] + (childHeight / 2)
+// line.resize(childX,0)
+// for (let i = 0; i < numberOfLines; i++) {
+//     const line = figma.createLine()
+//     line.x = 
+//     // figma.currentPage.appendChild(line)
+//     // nodes.push(line)
+//     console.log(i)
+// }
