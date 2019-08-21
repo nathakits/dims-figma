@@ -18,44 +18,43 @@ if (selection.length == 1) {
     let childX: number = child.x
     let childY: number = child.y
 
+    // update child parent to parent selection instead
+    //  even though this works but seems like it is not wise to do this
     let parentWidth = child.parent.width
     let parentHeight = child.parent.height
 
-    let distance: { t?: number; r?: number; b?: number; l?: number; } = {};
+    let distance: number[] = [];
     
-    distance.l = childX
-    distance.t = childY
-    distance.r = parentWidth - (childX + childWidth)
-    distance.b = parentHeight - (childY + childHeight)
+    distance[0] = childX
+    distance[1] = childY
+    distance[2] = parentWidth - (childX + childWidth)
+    distance[3] = parentHeight - (childY + childHeight)
 
-    let getDistance = Object.values(distance)
-    let points = Object.values(getAllCenterPoints(child))
+    // let getDistance = Object.values(distance)
+    // let points = Object.values(getAllCenterPoints(child))
     
-    const line = figma.createLine()
-    loopPoints(points, line)
-    loopDistance(getDistance, line)
+    for (let i = 0; i < distance.length; i++) {
+        const line = figma.createLine()
+        const length = distance[i]
+        line.resize(length, 0)
     }
+
+    // loopPoints(points, line)
+    // loopDistance(getDistance, line)
     
     // figma.group(nodes, child.parent)
     
     errorMessage = ''
 }
 
-function loopPoints(array, line){
-    for (let i = 0; i < array.length; i++) {
-        const pts = array[i];
-        line.x = pts.x
-        line.y = pts.y
-        console.log(pts)
-   }
-}
-
-function loopDistance(array, line){
-    for (let i = 0; i < array.length; i++) {
-        const length = array[i];
-        line.resize(length,0)
-    }
-}
+// function loopPoints(array, line){
+//     for (let i = 0; i < array.length; i++) {
+//         const pts = array[i];
+//         line.x = pts.x
+//         line.y = pts.y
+//         console.log(pts)
+//    }
+// }
 
 // Returns all possible center points
 function getAllCenterPoints(obj) {
